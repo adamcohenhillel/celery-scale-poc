@@ -1,20 +1,21 @@
 from flask import Blueprint, jsonify, request, current_app
 
 
-api_bp = Blueprint('api_bp', __name__)
+someapp_bp = Blueprint('someapp_bp', __name__)
 
 
-@api_bp.route('/tasks', methods=['POST'])
+@someapp_bp.route('/tasks', methods=['POST'])
 def longtask():
     """Create new task"""
-    task = long_task.apply_async()
-    return jsonify({}), 202, {'Location': url_for('taskstatus',
-                                                  task_id=task.id)}
+    task = current_app.celery.send_task('long_task')
+    # r = result.get()
+    # task = long_task.apply_async()
+    return jsonify(task_id=task.id), 202
 
 
-@api_bp.route('/tasks/<task_id>')
+@someapp_bp.route('/tasks/<task_id>')
 def taskstatus(task_id):
-    task = long_task.AsyncResult(task_id)
+    task = current_app.celery.AsyncResult(task_id)
     if task.state == 'PENDING':
         response = {
             'state': task.state,

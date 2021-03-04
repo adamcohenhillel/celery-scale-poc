@@ -1,17 +1,19 @@
-from .main import create_celery_app
+import time
+import random
+from celery import shared_task
 
 
-celery = create_celery_app()
-
-
-@celery.task(bind=True)
+@shared_task(bind=True, name='long_task')
 def long_task(self):
-    """Background task that runs a long function with progress reports."""
+    """Task that takes long time to run,
+    in the meantime, it updates its progress
+    """
     verb = ['Starting up', 'Booting', 'Repairing', 'Loading', 'Checking']
     adjective = ['master', 'radiant', 'silent', 'harmonic', 'fast']
     noun = ['solar array', 'particle reshaper', 'cosmic ray', 'orbiter', 'bit']
     message = ''
     total = random.randint(10, 50)
+    
     for i in range(total):
         if not message or random.random() < 0.25:
             message = '{0} {1} {2}...'.format(random.choice(verb),
@@ -21,5 +23,10 @@ def long_task(self):
                           meta={'current': i, 'total': total,
                                 'status': message})
         time.sleep(1)
-    return {'current': 100, 'total': 100, 'status': 'Task completed!',
-            'result': 42}
+
+    return {
+        'current': 100,
+        'total': 100,
+        'status': 'Task completed!',
+        'result': 42
+    }
