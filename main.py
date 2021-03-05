@@ -6,7 +6,6 @@ from worker import celery as celery_w
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(WorkerConfig)
     celery.conf.update(app.config)
     app.celery = celery_w
     app.register_blueprint(someapp_bp)
