@@ -9,7 +9,7 @@ def create_app():
     app.config.from_object(WorkerConfig)
     celery.conf.update(app.config)
     app.celery = celery_w
-    app.register_blueprint(someapp_bp)]
+    app.register_blueprint(someapp_bp)
     
     return app
 
