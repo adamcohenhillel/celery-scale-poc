@@ -1,7 +1,7 @@
 from flask import Flask
 
 from api.someapp import someapp_bp
-from celery_worker import celery as celery_w
+from worker import celery as celery_w
 
 
 def create_app():
