@@ -1,4 +1,8 @@
-from flask import Blueprint, jsonify, request, current_app
+"""
+Example of how to use Celery within Flask's views
+(trigger tasks and read tasks' results)
+"""
+from flask import Blueprint, jsonify, current_app
 
 
 someapp_bp = Blueprint('someapp_bp', __name__)
@@ -8,8 +12,6 @@ someapp_bp = Blueprint('someapp_bp', __name__)
 def longtask():
     """Create new task"""
     task = current_app.celery.send_task('long_task')
-    # r = result.get()
-    # task = long_task.apply_async()
     return jsonify(task_id=task.id), 202
 
 
